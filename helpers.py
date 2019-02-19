@@ -41,22 +41,20 @@ class Powerhouse(object):
         return self.calculate_integer_level() / 31
 
     def calculate_integer_level(self):
-        return self.state[0] + 2 * self.state[1] + 4 * self.state[2] + 8 * self.state[3] + 16 * self.state[4]
+        return 16 * self.state[0] + 8 * self.state[1] + 4 * self.state[2] + 2 * self.state[3] + self.state[4]
 
     def level_increment(self):
         level = self.calculate_integer_level()
         if level >= 31:
             return False
-        for index, value in enumerate(bin(level + 1)[2:]):
-            self.state[-1 - index] = int(value)
+        self.state = [int(i) for i in '{:05b}'.format(level + 1)]
         return True
 
     def level_decrement(self):
         level = self.calculate_integer_level()
         if level <= 0:
             return False
-        for index, value in enumerate(bin(level - 1)[2:]):
-            self.state[-1 - index] = int(value)
+        self.state = [int(i) for i in '{:05b}'.format(level - 1)]
         return True
 
 
@@ -110,25 +108,18 @@ def aim_function(candidate, demand, w):
 
 def fix_candidate(candidate, demand):
     epsilon = calculate_epsilon(candidate, demand)
-    original_epsilon = epsilon
-    # print(f'fixing candidate {epsilon}')
     if abs(epsilon) <= 100:
         return False
     if epsilon < 0:
         while epsilon < -100:
-            # print('still in while increment?', epsilon)
             candidate_sorted = sorted(candidate, key=lambda x: x.level)
             if not any(powerhouse.level_increment() for powerhouse in candidate_sorted):
                 return False
             epsilon = calculate_epsilon(candidate, demand)
-            # print(f'Lowest powerhouse level incresed! Now epsilon: {epsilon}')
     else:
         while epsilon > 100:
-            # print('still in while decrement?', epsilon)
             candidate_sorted = sorted(candidate, key=lambda x: x.level, reverse=True)
             if not any(powerhouse.level_decrement() for powerhouse in candidate_sorted):
                 print('not called even once!')
                 return False
             epsilon = calculate_epsilon(candidate, demand)
-            # print(f'Biggest powerhouse level decreased! Now epsilon: {epsilon}')
-    # print(f'Candidate fixed! Now epsilon {epsilon}, before {original_epsilon}')

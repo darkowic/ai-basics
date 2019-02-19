@@ -18,14 +18,22 @@ class PowerhouseTestCase(unittest.TestCase):
         )
 
     def test_level_increment(self):
-        level_before = self.powerhouse.calculate_integer_level()
+        self.powerhouse.state = [0, 0, 0, 0, 0]
+        self.assertEqual(self.powerhouse.calculate_integer_level(), 0)
         self.powerhouse.level_increment()
-        self.assertEqual(self.powerhouse.calculate_integer_level(), level_before + 1)
+        self.assertEqual(self.powerhouse.calculate_integer_level(), 1)
+        for i in range(35):
+            self.powerhouse.level_increment()
+        self.assertEqual(self.powerhouse.calculate_integer_level(), 31)
 
     def test_level_decrement(self):
-        level_before = self.powerhouse.calculate_integer_level()
+        self.powerhouse.state = [1, 1, 1, 1, 1]
+        self.assertEqual(self.powerhouse.calculate_integer_level(), 31)
         self.powerhouse.level_decrement()
-        self.assertEqual(self.powerhouse.calculate_integer_level(), level_before - 1)
+        self.assertEqual(self.powerhouse.calculate_integer_level(), 30)
+        for i in range(35):
+            self.powerhouse.level_decrement()
+        self.assertEqual(self.powerhouse.calculate_integer_level(), 0)
 
 
 class OnePointCrossingTestCase(unittest.TestCase):
