@@ -1,1 +1,3 @@
-# Basics of AI - Powerhouses costs optimization using the genetic algorithm
+# Basics of AI
+
+Implementation of genetic algorithms for learning purposes.
