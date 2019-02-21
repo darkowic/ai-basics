@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import matplotlib.pyplot as plt
 
 from random import randint, uniform, random, sample
 
@@ -29,10 +30,10 @@ def generate_candidates(count):
                 Powerhouse(
                     randint(500, 750),
                     randint(1000, 1250),
-                    uniform(2.5, 7.5),
-                    uniform(2.5, 7.5) * pow(10, -3),
-                    uniform(2.5, 7.5) * pow(10, -6),
-                    uniform(2.5, 7.5) * pow(10, -8)
+                    uniform(2.5, 7.5), # a
+                    uniform(2.5, 7.5) * pow(10, -3), # b
+                    uniform(2.5, 7.5) * pow(10, -6), # c
+                    uniform(2.5, 7.5) * pow(10, -8) # s
                 )
             )
         fix_candidate(candidate, POWER_DEMAND)
@@ -51,11 +52,7 @@ population = generate_candidates(CANDIDATES_COUNT)
 modified_mutation_frequency = MUTATION_FREQUENCY * 2
 
 
-def do():
-    pass
-
-
-recent_result = 0
+results = []
 result_not_changed_counter = 0
 
 # TODO: save data for 1st generation
@@ -120,14 +117,25 @@ for i in range(GENERATIONS_MAX_COUNT):
 
     population = new_population
 
-    if abs(best_result - recent_result) < 0.5:
+    last_result = results[-1] if len(results) >= 1 else 0
+    if abs(best_result - last_result) < 0.5:
         result_not_changed_counter += 1
     else:
         result_not_changed_counter = 0
 
+    results.append(best_result)
+
     if result_not_changed_counter > 50:
         print(f'Not changed for a while! Break!')
         break
-    recent_result = best_result
 
+print(f'Number of generations: {generation_number}')
 print(f'Number of applied mutations: {mutations_counter}')
+
+min_result = min(results)
+max_result = max(results)
+plt.plot([i + 1 for i in range(generation_number)], results, 'ro')
+plt.axis([0, generation_number, min(results) - min(results) / 10, max(results) + max(results) / 10])
+plt.xlabel('Generations')
+plt.ylabel('Fuel cost')
+plt.show()

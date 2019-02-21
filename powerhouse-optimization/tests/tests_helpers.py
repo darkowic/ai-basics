@@ -17,6 +17,20 @@ class PowerhouseTestCase(unittest.TestCase):
             pow(1, -8)
         )
 
+    def test_general(self):
+        powerhouse = Powerhouse(
+            900,
+            1200,
+            1,
+            2,
+            3,
+            1
+        )
+        powerhouse.state = [0, 0, 0, 0, 0]
+        self.assertEqual(powerhouse.level, 0)
+        self.assertEqual(powerhouse.power, 900)
+        self.assertEqual(powerhouse.fuel_cost, 1 + 2 * 900 + 3 * 900 * 900)
+
     def test_level_increment(self):
         self.powerhouse.state = [0, 0, 0, 0, 0]
         self.assertEqual(self.powerhouse.calculate_integer_level(), 0)
@@ -51,21 +65,26 @@ class OnePointCrossingTestCase(unittest.TestCase):
 
 class CalculateEpsilonTestCase(unittest.TestCase):
     def setUp(self):
-        self.candidate = []
         self.powerhouse1 = Powerhouse(
             900,
             1200,
             1,
-            pow(1, -3),
-            pow(1, -6),
-            pow(1, -8)
+            2,
+            3,
+            1
         )
+        self.powerhouse1.state = [0, 0, 0, 0, 0]
 
     def test_calculate_epsilon(self):
-        result = calculate_epsilon([self.powerhouse1], 900)
-        # import pdb; pdb.set_trace()
-        pass
-
+        demand = 950
+        # at level 0 power is 900
+        # s * power^2
+        power_lost = 1 * 900 * 900
+        # produced - demand - lost
+        expected = 900 - demand - power_lost
+        # 1 + 2 * 900 + 3 * 900 * 900
+        result = calculate_epsilon([self.powerhouse1], demand)
+        self.assertEqual(expected, result)
 
 class HelpersTest(unittest.TestCase):
     def setUp(self):
