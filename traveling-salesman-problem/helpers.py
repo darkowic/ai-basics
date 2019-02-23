@@ -1,7 +1,7 @@
 from random import randint
 
 
-def generate_distances_matrix(count):
+def generate_costs_matrix(count):
     matrix = [[0 for j in range(count)] for i in range(count)]
 
     for i in range(count):
